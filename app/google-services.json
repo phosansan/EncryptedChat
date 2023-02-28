@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "780222416434",
+    "project_id": "encryptedchat-52e93",
+    "storage_bucket": "encryptedchat-52e93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780222416434:android:b1538cae06decafda85e2b",
+        "android_client_info": {
+          "package_name": "com.example.encryptedchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "780222416434-h966b4firc6vp5k74sth36q8sc144ajv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZNucIlrt1k4eYThYTiDCW4Yk1iJjH2IA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "780222416434-h966b4firc6vp5k74sth36q8sc144ajv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

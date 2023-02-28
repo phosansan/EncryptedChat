@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Sign.SignIn">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/label_atas"
+        android:padding="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:textStyle="bold"
+            android:textSize="16dp"
+            android:text="Masukkan No. Telepon"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/label_atas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="25dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="SMS Verifikasi akan dikirimkan melalui Nomor Ponsel anda. Pastikan anda memasukkan Nomor yang sesuai"/>
+
+        <EditText
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/ed_ponsel"
+            android:gravity="center_horizontal"
+            android:inputType="phone"
+            android:maxLength="14"
+            android:maxLines="1"
+            android:hint="Masukkan No. Ponsel Anda"/>
+
+
+        <EditText
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:id="@+id/ed_verifikasi"
+            android:inputType="number"
+            android:maxLength="6"
+            android:hint="Masukkan Kode"/>
+
+    </LinearLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_masuk"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:text="Masuk"/>
+
+</RelativeLayout>
+</layout>
