@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Chatting extends AppCompatActivity {
 
@@ -100,11 +101,11 @@ public class Chatting extends AppCompatActivity {
 
         DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("Daftar Chat").
                 child(firebaseUser.getUid()).child(IDPenerima);
-        reference1.child("IDCHat").setValue(IDPenerima);
+        reference1.child("IDChat").setValue(IDPenerima);
 
         DatabaseReference reference2 = FirebaseDatabase.getInstance().getReference("Daftar Chat").
                 child(IDPenerima).child(firebaseUser.getUid());
-        reference2.child("IDCHat").setValue(IDPenerima);
+        reference2.child("IDChat").setValue(IDPenerima);
 
     }
 
@@ -117,13 +118,27 @@ public class Chatting extends AppCompatActivity {
                     list.clear();
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                         Pesan pesan = snapshot.getValue(Pesan.class);
-                        if (pesan != null
-                                && pesan.getPengirim().equals(firebaseUser.getUid())
-                                && pesan.getPenerima().equals(IDPenerima)
-                                || pesan.getPenerima().equals(firebaseUser.getUid())
-                                && pesan.getPengirim().equals(IDPenerima)){
+                        Log.d("TEST", "onDataChange: " + firebaseUser.getUid());
+                        Log.d("TEST", "onDataChange: " + pesan);
+                        Log.d("TEST", "onDataChange: " + pesan.getPenerima());
+                        if (pesan != null) {
+                            String pengirim = pesan.getPengirim();
+                            String penerima = pesan.getPenerima();
 
-                            list.add(pesan);
+                            if (Objects.equals(pengirim, firebaseUser.getUid())
+                                    && Objects.equals(penerima, IDPenerima)
+                                    || Objects.equals(penerima, firebaseUser.getUid())
+                                    && Objects.equals(pengirim, IDPenerima)
+                            ) {
+                                list.add(pesan);
+                            }
+
+//                            if (pesan.getPengirim().equals(firebaseUser.getUid())
+//                                    && pesan.getPenerima().equals(IDPenerima)
+//                                    || pesan.getPenerima().equals(firebaseUser.getUid())
+//                                    && pesan.getPengirim().equals(IDPenerima)) {
+//                                list.add(pesan);
+//                            }
                         }
                     }
                     if (adapter != null) {

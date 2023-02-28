@@ -2,6 +2,7 @@ package com.example.encryptedchat.menu;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,11 +49,11 @@ public class ChatFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater,R.layout.fragment_tab, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_tab, container, false);
 
         list = new ArrayList<>();
         daftarID = new ArrayList<>();
-        adapter = new AdapterTab(list,getContext());
+        adapter = new AdapterTab(list, getContext());
 
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         binding.recyclerView.setAdapter(adapter);
@@ -61,56 +62,99 @@ public class ChatFragment extends Fragment {
         reference = FirebaseDatabase.getInstance().getReference();
         firestore = FirebaseFirestore.getInstance();
 
-        if (firebaseUser !=null){
-            daftarChat();
+        if (firebaseUser != null) {
+            if (daftarID.isEmpty()) initDaftarChat();
+            else daftarChat();
         }
 
         return binding.getRoot();
     }
 
+    private void initDaftarChat() {
+        reference.child("Daftar Chat").child(firebaseUser.getUid()).get()
+                .addOnCompleteListener(task -> {
+                    DataSnapshot snapshotResult = task.getResult();
+                    Log.d("InitChat", "snapshot: " + snapshotResult);
+                    if (task.isSuccessful()) {
+                        daftarID.clear();
+                        list.clear();
+                        Log.d("InitChat", "onDataChange: " + snapshotResult);
+                        Log.d("InitChat", "onDataChange: " + snapshotResult.getChildren());
+                        for (DataSnapshot snapshot : snapshotResult.getChildren()) {
+                            String ID = Objects.requireNonNull(snapshot.child("IDChat").getValue()).toString();
+                            Log.d("InitChat", "childValue: " + snapshot.child("IDChat").getValue());
+                            daftarID.add(ID);
+                        }
+                    }
+                })
+                .continueWith(task -> {
+                    bacaAkun();
+                    return null;
+                });
+    }
+
     private void daftarChat() {
-        reference.child("Daftar Chat").child(firebaseUser.getUid()).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                list.clear();
-                daftarID.clear();
+        reference.child("Daftar Chat").child(firebaseUser.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        list.clear();
+                        daftarID.clear();
 
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
-                    String ID = Objects.requireNonNull(snapshot.child("IDChat").getValue().toString());
+                        Log.d("ChangeChat", "onDataChange: " + dataSnapshot);
+                        Log.d("ChangeChat", "onDataChange: " + dataSnapshot.getChildren());
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            Log.d("ChangeChat", "onDataChange: " + snapshot.child("IDChat").getValue());
+                            if (snapshot.child("IDChat").getValue() != null) {
+                                String ID = Objects.requireNonNull(snapshot.child("IDChat").getValue().toString());
+                                Log.d("ChangeChat", "childValue: " + snapshot.child("IDChat").getValue());
+                                daftarID.add(ID);
+                            }
+                        }
+                        // EXPERIMENTAL!
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                bacaAkun();
+                            }
+                        }, 3000L /* Delay 3 detik */);
 
-                    daftarID.add(ID);
-                }
+                        // ORIGINAL
+                        // bacaAkun();
+                    }
 
-                bacaAkun();
-            }
+                    @Override
+                    public void onCancelled(DatabaseError error) {
 
-            @Override
-            public void onCancelled(DatabaseError error) {
+                    }
 
-            }
-        });
+
+                });
     }
 
     private void bacaAkun() {
+        Log.d("BacaAkun", "bacaAkun: " + daftarID.toString());
         handler.post(new Runnable() {
             @Override
             public void run() {
-                for (String id : daftarID){
+                for (String id : daftarID) {
                     firestore.collection("Akun").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             String ID = documentSnapshot.getString("id");
+                            Log.d("TAG", "onSuccess: " + documentSnapshot);
                             Tab chat = new Tab(ID,
                                     documentSnapshot.getString("noTelp"),
                                     documentSnapshot.getString("nama"),
                                     documentSnapshot.getString("keterangan"),
                                     documentSnapshot.getString("tanggal"));
+                            Log.d("TAG", "onSuccess: " + chat.getNama());
 
-                            if (ID !=null && !ID.equals(firebaseUser.getUid())){
+                            if (ID != null && !ID.equals(firebaseUser.getUid())) {
                                 list.add(chat);
                             }
 
-                            if (adapter !=null){
+                            if (adapter != null) {
                                 adapter.notifyItemInserted(0);
                                 adapter.notifyDataSetChanged();
                             }
